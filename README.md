@@ -6,7 +6,7 @@
 ```
 
 ddns.py 是基于 [DNSPod](http://www.dnspod.cn/docs/records.html#dns) 服务的动态 DNS 脚本，用于检测 IP 变化并更新至 DNSPod，支持多域名解析。支持 Linux 设备，包括树莓派（[Raspberry Pi](https://www.raspberrypi.org/)）。不需要手动添加解析，也不需要人工获取 domain_id 和 record_id，只要跟着教程来，小白都可以很快上手（软件都不会安装的除外）。有些朋友的电脑上安装了多个版本的Python，特别是同时有Python2和Python3的朋友，请注意区分版本。
-如果不想安装Python3的小伙伴请前往[ddns](https://github.com/dingguotu/ddns)版本。
+如果不想安装Python3的小伙伴请前往[ddns](https://github.com/dingguotu/ddns)。
 
 ---
 
