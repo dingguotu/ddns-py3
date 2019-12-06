@@ -42,8 +42,8 @@ git clone https://github.com/dingguotu/ddns-py3.git
 如果域名是在阿里云或其他非腾讯云处购买的，还需要进入相对应的服务商控制台，修改域名的DNS地址为：
 
 ```bash
-f1g1ns1.dnspod.net
-f1g1ns2.dnspod.net
+ns1.alidns.com
+ns2.alidns.com
 ```
 
 ---
@@ -52,8 +52,8 @@ f1g1ns2.dnspod.net
 
 ```bash
 {
-    "id": <api_token_id>,
-    "token": <api_token>,
+    "access_key": <api_token_id>,
+    "access_secret": <api_token>,
     "domains": [
         {
             "name": <first_domain>,
