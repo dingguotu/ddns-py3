@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 from urllib import request, parse
-import json
-import os
+import json, os, logging
+import logger
 
 Headers = {
     'Accept': 'text/json',
@@ -106,7 +106,9 @@ def create_record_id(login_token, domain_id, sub_domain, localIP):
     data = json.loads(response.read().decode('utf-8'))
 
     if int(data['status']['code']) == 1:
-        print (f"Sub_domain [{sub_domain}] create success")
+        logging.info(f"Sub_domain [{sub_domain}] create success")
+    else:
+        logging.error(f"Sub_domain [{sub_domain}] create failed")
 
 
 def record_ddns(login_token, domain_id, record_id, sub_domain, localIP):
@@ -126,6 +128,6 @@ def record_ddns(login_token, domain_id, record_id, sub_domain, localIP):
     data = json.loads(response.read().decode('utf-8'))
 
     if int(data['status']['code']) == 1:
-        print (f"DDns Success for subdomain [{sub_domain}], IP change to {localIP}")
+        logging.info(f"DDns Success for subdomain [{sub_domain}], IP change to {localIP}")
     else:
-        print (f"DDns Error for subdomain [{sub_domain}]: {data['status']['message']}")
+        logging.error(f"DDns Error for subdomain [{sub_domain}]: {data['status']['message']}")

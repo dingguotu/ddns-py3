@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-import socket 
-import json
-import os
+from urllib import request
+import json, os, logging
 import dnspod
+import logger
 
 global LocalIP
 global HostIP
@@ -12,10 +12,14 @@ global Domain_Id
 
 def init_domain(domain):
     global Domain_Id
-
-    domain_exists = check_domain_exists(domain)
-    if domain_exists == False:
-        Domain_Id = dnspod.create_domain(Login_Token, domain['name'])
+    try:
+        domain_exists = check_domain_exists(domain)
+        if domain_exists == False:
+            Domain_Id = dnspod.create_domain(Login_Token, domain['name'])
+        pass
+    except Exception as e:
+        logging.error(u"初始化域名失败")
+        pass
 
 
 def check_domain_exists(domain):
@@ -41,23 +45,34 @@ def ddns(domain):
     
 def get_ip():
     global LocalIP
-    sock = socket.create_connection(('ns1.dnspod.net', 6666), 20)
-    LocalIP = sock.recv(16)
-    print(LocalIP)
-    sock.close()
+    try:
+        response = request.urlopen(r'http://ip.taobao.com/outGetIpInfo?ip=myip&accessKey=alibaba-inc').read().decode('utf-8')
+        data = json.loads(response)
+        LocalIP = data['data']['ip']
+        logging.info(LocalIP)
+        pass
+    except Exception as e:
+        logging.error(u"获取本机IP失败")
+        pass
 
 
 def get_host_ip(domain):
     global HostIP
     global Domain_Id
-    HostIP = dnspod.get_record_value(Login_Token, Domain_Id, domain['sub_domains'][0])
-    print(HostIP)
+    try:
+        HostIP = dnspod.get_record_value(Login_Token, Domain_Id, domain['sub_domains'][0])
+        logging.info(HostIP)
+        pass
+    except Exception as e:
+        logging.error(u"获取远程IP失败")
+        pass
 
     
 if __name__ == '__main__':
     global Login_Token
+    
+    logger.setup_logging()
     conf = json.load(open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "conf.json"), "r"))
-
     Login_Token = "%s,%s" % (conf['id'], conf['token'])
     Domains = conf['domains']
     
@@ -67,8 +82,8 @@ if __name__ == '__main__':
             init_domain(domain)
             get_host_ip(domain)
             if HostIP != LocalIP:
-                print(f"Begin update [{domain['name']}].")
+                logging.info(f"Begin update [{domain['name']}].")
                 ddns(domain)
     except Exception as e:
-        print(e)
+        logging.error(e)
         pass
